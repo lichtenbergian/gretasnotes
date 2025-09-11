@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Greta Capuani's Notes</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap">
+    <style>
+        @font-face {
+            font-family: 'Gutenberg Textura';
+            src: url('fonts/GutenbergTextura.woff2') format('woff2'),
+                 url('fonts/GutenbergTextura.woff') format('woff'),
+                 url('fonts/GutenbergTextura.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Pfeffer Mediaeval';
+            src: url('fonts/PfefferMediaeval.woff2') format('woff2'),
+                 url('fonts/PfefferMediaeval.woff') format('woff'),
+                 url('fonts/PfefferMediaeval.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        :root {
+            /* Colori dark mode - TUTTO BIANCO */
+            --dark-bg: #1a1a1a;
+            --dark-text: #ffffff;
+            --dark-accent: #ffffff;
+            --dark-link: #ffffff;
+            --dark-border: #3a3a3a;
+            
+            /* Colori day mode - TUTTO NERO OPACO */
+            --day-bg: #f2e6c9;
+            --day-text: #5a4b38; /* Nero opaco */
+            --day-accent: #5a4b38; /* Nero opaco */
+            --day-link: #5a4b38; /* Nero opaco */
+            --day-border: #c4ac86;
+            
+            /* Font */
+            --font-normal: 'Libre Baskerville', serif;
+            --font-headings: 'Playfair Display', serif;
+            --font-gutenberg: 'Gutenberg Textura', cursive;
+            --font-pfeffer: 'Pfeffer Mediaeval', cursive;
+            
+            /* Applicazione iniziale */
+            --bg-color: var(--dark-bg);
+            --text-color: var(--dark-text);
+            --accent-color: var(--dark-accent);
+            --link-color: var(--dark-link);
+            --border-color: var(--dark-border);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-normal);
+            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.4s ease;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            cursor: default;
+        }
+
+        body.day-mode {
+            --bg-color: var(--day-bg);
+            --text-color: var(--day-text);
+            --accent-color: var(--day-accent);
+            --link-color: var(--day-link);
+            --border-color: var(--day-border);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-headings);
+            font-weight: normal;
+            letter-spacing: 0.5px;
+            color: var(--text-color);
+        }
+
+        a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: bold;
+            border-bottom: 1px dotted var(--accent-color);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        a:hover {
+            border-bottom: 1px solid var(--accent-color);
+        }
+
+        /* Header e toggle */
+        .header-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.8rem;
+            font-weight: normal;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+            color: var(--text-color);
+        }
+
+        /* Separatore con asterischi di Manuzio */
+        .manuzio-separator {
+            font-family: var(--font-headings);
+            font-size: 1.2rem;
+            letter-spacing: 5px;
+            color: var(--text-color);
+            margin: 1rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .manuzio-separator:hover {
+            letter-spacing: 8px;
+        }
+
+        /* Pulsante toggle tema */
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--text-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(15deg);
+        }
+
+        .moon-icon, .sun-icon {
+            transition: opacity 0.3s ease;
+            width: 18px;
+            height: 18px;
+        }
+
+        .moon-icon {
+            display: none;
+        }
+
+        body.day-mode .sun-icon {
+            display: none;
+        }
+
+        body.day-mode .moon-icon {
+            display: block;
+        }
+
+        /* Menu Manuziano */
+        .manuzio-menu {
+            display: none;
+            width: 100%;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            padding: 1.2rem;
+            margin-top: 1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .manuzio-menu.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .manuzio-menu h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .manuzio-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .manuzio-menu li {
+            margin-bottom: 0.7rem;
+        }
+
+        /* Descrizione */
+        .description {
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            text-align: center;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-color);
+        }
+
+        /* Layout colonne principali */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2.5rem;
+            margin: 2.5rem 0;
+        }
+
+        /* Sezioni Studies e Photos */
+        .main-section {
+            background-color: rgba(0, 0, 0, 0.05);
+            padding: 1.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        body.day-mode .main-section {
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+
+        .main-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .main-section h2 {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+            margin-top: 0;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            font-family: var(--font-pfeffer); /* Aggiunto il font Pfeffer */
+        }
+
+        .main-section h2:before {
+            content: "⁂";
+            margin-right: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .section-description {
+            margin-top: 1rem;
+            font-style: italic;
+            color: var(--text-color);
+        }
+
+        /* Pagine Studies e Photos */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1.5rem;
+        }
+
+        .page-header h2, .page-header p {
+            color: var(--text-color);
+        }
+
+        .three-column-layout {
+            display: grid;
+            grid-template-columns: 100px 1fr 120px;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .annual-function {
+            font-family: var(--font-pfeffer);
+            font-size: 1.1rem; /* Leggermente più piccolo */
+            color: var(--text-color);
+            text-align: right;
+            padding-top: 0.3rem;
+        }
+
+        .observation-content {
+            padding: 1rem;
+            border-left: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+        }
+
+        .observation-content h3 {
+            color: var(--text-color);
+            font-size: 1.2rem; /* Leggermente più piccolo */
+            margin-bottom: 0.5rem;
+        }
+
+        .observation-content p {
+            color: var(--text-color);
+            font-size: 0.95rem; /* Leggermente più piccolo */
+        }
+
+        .observation-date {
+            font-family: var(--font-pfeffer);
+            font-size: 1rem; /* Leggermente più piccolo */
+            color: var(--text-color);
+            text-align: left;
+            padding-top: 0.3rem;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2rem;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+            width: 40px;
+            height: 40px;
+        }
+
+        .back-button:hover {
+            background-color: var(--text-color);
+            color: var(--bg-color);
+        }
+
+        /* Popup - MODIFICATO */
+        .article-popup {
+            display: none;
+            position: fixed;
+            width: 320px;
+            max-height: 70vh;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            padding: 1.2rem;
+            overflow-y: auto;
+            border-radius: 4px;
+            pointer-events: none;
+        }
+
+        .article-popup.active {
+            display: block;
+            animation: fadeIn 0.2s ease;
+            pointer-events: auto;
+        }
+
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+            position: sticky;
+            top: 0;
+            background-color: var(--bg-color);
+            z-index: 10;
+        }
+
+        .popup-header h3 {
+            color: var(--text-color);
+        }
+
+        .popup-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .popup-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-color);
+            font-family: var(--font-normal);
+            transition: all 0.2s ease;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: auto;
+        }
+
+        .popup-btn:hover {
+            color: var(--accent-color);
+        }
+
+        .popup-content {
+            line-height: 1.6;
+            font-size: 0.9rem;
+            color: var(--text-color);
+            overflow-y: auto;
+            max-height: calc(70vh - 70px);
+        }
+
+        /* Galleria foto */
+        .photos-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .photo-column {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .photo-item {
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .photo-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+            margin-bottom: 0.8rem;
+        }
+
+        .photo-caption {
+            font-style: italic;
+            color: var(--text-color);
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: auto;
+            padding-top: 3.5rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-color);
+        }
+
+        .footer-separator {
+            height: 1px;
+            background-color: var(--border-color);
+            margin-bottom: 1.3rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .three-column-layout {
+                grid-template-columns: 80px 1fr 100px;
+                gap: 1rem;
+            }
+            
+            .photos-container {
+                grid-template-columns: 1fr;
+            }
+            
+            body {
+                padding: 1.2rem;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .theme-toggle {
+                position: relative;
+                margin-top: 1rem;
+            }
+            
+            .header-container {
+                flex-direction: column;
+            }
+
+            .article-popup {
+                width: 280px;
+                max-height: 60vh;
+            }
+        }
+    </style>
+</head>
+<body class="dark-mode">
+    <header>
+        <div class="header-container">
+            <h1>Greta Capuani's Notes</h1>
+            <div class="manuzio-separator" id="manuzio-menu-toggle">⁂⁂⁂</div>
+            <button id="theme-toggle" class="theme-toggle">
+                <svg class="sun-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2"/>
+                    <path d="M12 2V4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M12 20V22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M4 12H2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M22 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M5.636 5.636L7.05 7.05" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M16.95 16.95L18.364 18.364" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M18.364 5.636L16.95 7.05" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M7.05 16.95L5.636 18.364" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <svg class="moon-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20.5 14.5C19.5509 14.9563 18.4902 15.1669 17.4246 15.1086C16.359 15.0503 15.3346 14.7252 14.4613 14.1702C13.588 13.6152 12.8995 12.852 12.4702 11.9622C12.0409 11.0724 11.8872 10.09 12.0262 9.12855C12.1651 8.16707 12.5908 7.26572 13.2545 6.531C13.9181 5.79628 14.7914 5.25929 15.766 4.98709C16.7407 4.71489 17.7733 4.71896 18.746 5.00018C17.9333 5.9361 17.5 7.14076 17.5 8.38889C17.5 9.63701 17.9333 10.8417 18.746 11.7776C19.5587 12.7135 20.6901 13.3123 21.9167 13.4537C21.2742 13.784 20.5605 13.9641 19.8333 13.9792C19.8333 13.9792 20.5 14.5 20.5 14.5Z" stroke="currentColor" stroke-width="2"/>
+                </svg>
+            </button>
+            
+            <!-- Menu Manuziano -->
+            <div class="manuzio-menu" id="manuzio-menu">
+                <h3>Navigation</h3>
+                <ul>
+                    <li><a href="#" data-popup="about" data-title="About Me" data-content="Greta Capuani is an anthropologist and photographer specializing in medieval and Victorian history, customs, jewellery, and royal genealogy. She holds a BA in Anthropology and combines academic research with visual storytelling.">About Me</a></li>
+                    <li><a href="#" data-popup="contacts" data-title="Contacts" data-content="Email: contact@gretacapuani.com<br>Instagram: @gretacapuaniphotos<br>For research inquiries, please include a brief introduction and purpose of your message.">Contacts</a></li>
+                    <li><a href="#" data-popup="books" data-title="Recommended Books" data-content="1. 'The Time Traveler's Guide to Medieval England' by Ian Mortimer<br>2. 'Victorian Sensation' by Michael Diamond<br>3. 'The Anthropology of Dress and Fashion' by Brent Luvaas<br>4. 'The Crown Jewels' by Anna Keay<br>5. 'Royal Blood' by Richard Ollard">Recommended Books</a></li>
+                    <li><a href="#" data-popup="links" data-title="Useful Links" data-content="• The British Museum<br>• The Victoria and Albert Museum<br>• The Metropolitan Museum of Art<br>• The Royal Collection Trust<br>• Project Gutenberg">Useful Links</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+    
+    <main>
+        <div class="description">
+            <p>I am Ms Greta Capuani, BA in Anthropology and photographer. On this website, you will find my notes on medieval and Victorian history, anthropology, customs and jewellery, family trees and accounts of royal families.</p>
+        </div>
+        
+        <!-- Homepage Content -->
+        <div id="home-page" class="page active">
+            <div class="main-content">
+                <div class="main-section" id="studies-section">
+                    <h2>Studies & Notes</h2>
+                    <p class="section-description">Research notes and essays on anthropology, history, customs, jewellery, and royal genealogy.</p>
+                </div>
+                
+                <div class="main-section" id="photos-section">
+                    <h2>Photos</h2>
+                    <p class="section-description">My photographic work documenting historical sites, artefacts, jewellery, and anthropological subjects from my research travels.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Studies & Notes Page -->
+        <div id="studies-page" class="page">
+            <div class="page-header">
+                <h2>Studies & Notes on Anthropology and History</h2>
+                <p>Research notes and essays on anthropology, history, customs, jewellery, and royal genealogy.</p>
+            </div>
+            
+            <div id="studies-articles">
+                <!-- Gli articoli saranno ordinati automaticamente da JavaScript -->
+                <div class="three-column-layout" data-date="2023-09-17">
+                    <div class="annual-function">c.10</div>
+                    <div class="observation-content">
+                        <h3>Medieval Jewellery and Social Status</h3>
+                        <p>An analysis of how jewellery was used to denote social hierarchy in medieval Europe, with particular focus on sumptuary laws and their enforcement across different regions.</p>
+                    </div>
+                    <div class="observation-date">17.09.2023</div>
+                </div>
+                
+                <div class="three-column-layout" data-date="2023-10-22">
+                    <div class="annual-function">c.11</div>
+                    <div class="observation-content">
+                        <h3>Victorian Mourning Customs</h3>
+                        <p>An ethnographic study of Victorian mourning rituals, including the symbolism of mourning jewellery and the social expectations surrounding grief expression in 19th century England.</p>
+                    </div>
+                    <div class="observation-date">22.10.2023</div>
+                </div>
+                
+                <div class="three-column-layout" data-date="2023-11-15">
+                    <div class="annual-function">c.12</div>
+                    <div class="observation-content">
+                        <h3>Royal Bloodlines of Europe</h3>
+                        <p>A genealogical investigation into the interconnected royal families of Europe, focusing on the Habsburg, Romanov, and Windsor lineages and their anthropological significance.</p>
+                    </div>
+                    <div class="observation-date">15.11.2023</div>
+                </div>
+            </div>
+            
+            <div style="text-align: center;">
+                <button class="back-button" id="back-from-studies">←</button>
+            </div>
+        </div>
+        
+        <!-- Photos Page -->
+        <div id="photos-page" class="page">
+            <div class="page-header">
+                <h2>Photos</h2>
+                <p>My photographic work documenting historical sites, artefacts, jewellery, and anthropological subjects</p>
+            </div>
+            
+            <div class="photos-container">
+                <div class="photo-column">
+                    <div class="photo-item">
+                        <img src="https://placehold.co/600x400/1a1a1a/ffffff?text=Medieval+Artifact" alt="Medieval Artifact">
+                        <p class="photo-caption">14th century reliquary, British Museum</p>
+                    </div>
+                    
+                    <div class="photo-item">
+                        <img src="https://placehold.co/600x400/1a1a1a/ffffff?text=Victorian+Jewellery" alt="Victorian Jewellery">
+                        <p class="photo-caption">Victorian mourning brooch with hairwork, circa 1860</p>
+                    </div>
+                    
+                    <div class="photo-item">
+                        <img src="https://placehold.co/600x400/1a1a1a/ffffff?text=Historical+Site" alt="Historical Site">
+                        <p class="photo-caption">Canterbury Cathedral, stained glass detail</p>
+                    </div>
+                </div>
+                
+                <div class="photo-column">
+                    <div class="photo-item">
+                        <img src="https://placehold.co/600x400/1a1a1a/ffffff?text=Royal+Portrait" alt="Royal Portrait">
+                        <p class="photo-caption">Study of Tudor portraiture symbolism, National Portrait Gallery</p>
+                    </div>
+                    
+                    <div class="photo-item">
+                        <img src="https://placehold.co/600x400/1a1a1a/ffffff?text=Anthropological+Subject" alt="Anthropological Subject">
+                        <p class="photo-caption">Traditional craftsmanship: silver filigree techniques</p>
+                    </div>
+                    
+                    <div class="photo-item">
+                        <img src="https://placehold.co/600x400/1a1a1a/ffffff?text=Genealogical+Document" alt="Genealogical Document">
+                        <p class="photo-caption">Medieval illuminated manuscript depicting royal lineage</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center;">
+                <button class="back-button" id="back-from-photos">←</button>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Popup Generico - MODIFICATO -->
+    <div class="article-popup" id="article-popup">
+        <div class="popup-header">
+            <h3 id="popup-title">Popup Title</h3>
+            <div class="popup-actions">
+                <button class="popup-btn" id="close-btn">
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div class="popup-content" id="popup-content">
+            <p>Popup content...</p>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="footer-separator"></div>
+        <p>© 2025 Greta Capuani - All rights reserved</p>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleButton = document.getElementById('theme-toggle');
+            const body = document.body;
+            const manuzioMenuToggle = document.getElementById('manuzio-menu-toggle');
+            const manuzioMenu = document.getElementById('manuzio-menu');
+            const popup = document.getElementById('article-popup');
+            const closeBtn = document.getElementById('close-btn');
+            const popupTitle = document.getElementById('popup-title');
+            const popupContent = document.getElementById('popup-content');
+            
+            // Elementi di navigazione
+            const homePage = document.getElementById('home-page');
+            const studiesPage = document.getElementById('studies-page');
+            const photosPage = document.getElementById('photos-page');
+            const studiesSection = document.getElementById('studies-section');
+            const photosSection = document.getElementById('photos-section');
+            const backFromStudies = document.getElementById('back-from-studies');
+            const backFromPhotos = document.getElementById('back-from-photos');
+            
+            // 1. ORDINAMENTO AUTOMATICO DEGLI ARTICOLI
+            function sortArticlesByDate(containerId) {
+                const container = document.getElementById(containerId);
+                if (!container) return;
+                
+                const articles = Array.from(container.getElementsByClassName('three-column-layout'));
+                
+                // Ordina gli articoli per data (dalla più vecchia alla più nuova)
+                articles.sort((a, b) => {
+                    const dateA = new Date(a.getAttribute('data-date'));
+                    const dateB = new Date(b.getAttribute('data-date'));
+                    return dateA - dateB;
+                });
+                
+                // Rimuovi tutti gli articoli dal contenitore
+                while (container.firstChild) {
+                    container.removeChild(container.firstChild);
+                }
+                
+                // Reinserisci gli articoli ordinati
+                articles.forEach(article => {
+                    container.appendChild(article);
+                });
+            }
+            
+            // Applica l'ordinamento alla sezione studies
+            sortArticlesByDate('studies-articles');
+            
+            // 2. GESTIONE POPUP MIGLIORATA
+            let popupTimeout;
+            let activePopup = null;
+            let isPopupHovered = false;
+            let isScrollingPopup = false;
+            
+            // Controlla se c'è una preferenza salvata
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'day-mode') {
+                body.classList.add('day-mode');
+            }
+            
+            // Aggiungi listener per il toggle del tema
+            toggleButton.addEventListener('click', function() {
+                if (body.classList.contains('day-mode')) {
+                    body.classList.remove('day-mode');
+                    localStorage.setItem('theme', 'dark-mode');
+                } else {
+                    body.classList.add('day-mode');
+                    localStorage.setItem('theme', 'day-mode');
+                }
+            });
+            
+            // Apri/chiudi menu Manuziano
+            manuzioMenuToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                manuzioMenu.classList.toggle('active');
+            });
+            
+            // Chiudi menu se si clicca fuori
+            document.addEventListener('click', function(event) {
+                if (!event.target.closest('.header-container') && manuzioMenu.classList.contains('active')) {
+                    manuzioMenu.classList.remove('active');
+                }
+            });
+            
+            // Navigazione entre pagine
+            studiesSection.addEventListener('click', function() {
+                homePage.classList.remove('active');
+                studiesPage.classList.add('active');
+            });
+            
+            photosSection.addEventListener('click', function() {
+                homePage.classList.remove('active');
+                photosPage.classList.add('active');
+            });
+            
+            backFromStudies.addEventListener('click', function() {
+                studiesPage.classList.remove('active');
+                homePage.classList.add('active');
+            });
+            
+            backFromPhotos.addEventListener('click', function() {
+                photosPage.classList.remove('active');
+                homePage.classList.add('active');
+            });
+            
+            // Gestione popup che segue il mouse - MODIFICATA
+            document.querySelectorAll('a[data-popup]').forEach(link => {
+                link.addEventListener('mouseenter', function(e) {
+                    const title = this.getAttribute('data-title');
+                    const content = this.getAttribute('data-content');
+                    
+                    if (title && content) {
+                        clearTimeout(popupTimeout);
+                        popupTitle.textContent = title;
+                        popupContent.innerHTML = content;
+                        
+                        // Posiziona il popup vicino al cursore
+                        positionPopup(e.clientX, e.clientY);
+                        
+                        popup.classList.add('active');
+                        activePopup = popup;
+                        isPopupHovered = false;
+                    }
+                });
+                
+                link.addEventListener('mousemove', function(e) {
+                    if (activePopup === popup && !isScrollingPopup) {
+                        // Posiziona il popup vicino al cursore
+                        positionPopup(e.clientX, e.clientY);
+                    }
+                });
+                
+                link.addEventListener('mouseleave', function() {
+                    // Se il mouse non è sul popup, chiudi dopo un breve ritardo
+                    if (!isPopupHovered) {
+                        popupTimeout = setTimeout(() => {
+                            if (activePopup === popup) {
+                                popup.classList.remove('active');
+                                activePopup = null;
+                                document.body.style.overflow = ''; // Riabilita lo scrolling
+                            }
+                        }, 300);
+                    }
+                });
+                
+                // Previeni il comportamento predefinito del link
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                });
+            });
+            
+            // Funzione per posizionare il popup
+            function positionPopup(x, y) {
+                const popupWidth = popup.offsetWidth;
+                const popupHeight = popup.offsetHeight;
+                const windowWidth = window.innerWidth;
+                const windowHeight = window.innerHeight;
+                
+                // Calcola la posizione per evitare che esca dalla finestra
+                let left = x + 15;
+                let top = y + 15;
+                
+                if (left + popupWidth > windowWidth) {
+                    left = x - popupWidth - 15;
+                }
+                
+                if (top + popupHeight > windowHeight) {
+                    top = windowHeight - popupHeight - 15;
+                }
+                
+                // Applica la posizione
+                popup.style.left = left + 'px';
+                popup.style.top = top + 'px';
+            }
+            
+            // Gestione hover sui popup - MODIFICATA
+            popup.addEventListener('mouseenter', () => {
+                clearTimeout(popupTimeout);
+                isPopupHovered = true;
+            });
+            
+            popup.addEventListener('mousemove', (e) => {
+                // Permetti lo scrolling all'interno del popup
+                e.stopPropagation();
+            });
+            
+            popup.addEventListener('mouseleave', () => {
+                isPopupHovered = false;
+                popupTimeout = setTimeout(() => {
+                    if (activePopup === popup) {
+                        popup.classList.remove('active');
+                        activePopup = null;
+                        document.body.style.overflow = ''; // Riabilita lo scrolling
+                    }
+                }, 300);
+            });
+            
+            // Permetti lo scrolling all'interno del popup
+            popup.addEventListener('wheel', (e) => {
+                e.stopPropagation();
+                isScrollingPopup = true;
+                
+                // Riabilita lo scrolling dopo un breve ritardo
+                setTimeout(() => {
+                    isScrollingPopup = false;
+                }, 100);
+            });
+            
+            // Disabilita lo scrolling della pagina quando il popup è attivo
+            popup.addEventListener('mouseenter', function() {
+                document.body.style.overflow = 'hidden';
+            });
+            
+            popup.addEventListener('mouseleave', function() {
+                document.body.style.overflow = '';
+            });
+            
+            // Chiudi popup
+            closeBtn.addEventListener('click', function() {
+                popup.classList.remove('active');
+                activePopup = null;
+                isPopupHovered = false;
+                document.body.style.overflow = ''; // Riabilita lo scrolling
+            });
+        });
+    </script>
+</body>
+</html>
